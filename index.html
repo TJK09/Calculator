@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Calculator</title>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="button opr" id="clear">C</button>
+            <button class="button opr">&#247;</button>
+            <button class="button opr">&#10006;</button>
+            <button class="button operator">&#8722;</button>
+            <button class="button">7</button>
+            <button class="button">8</button>
+            <button class="button">9</button>
+            <button class="button operator">&#43;</button>
+            <button class="button">4</button>
+            <button class="button">5</button>
+            <button class="button">6</button>
+            <button class="button operator">&#37;</button>
+            <button class="button">1</button>
+            <button class="button">2</button>
+            <button class="button">3</button>
+            <button class="button operator">&#61;</button>
+            <button class="Dot">0</button>
+            <button class="Dot">&#8228;</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let buttons = Array.from(document.getElementsByClassName('button'));
+        let currentInput = '0';
+        let previousInput = '';
+        let operator = '';
+        let result = null;
+        let operatorClicked = false;
+
+        // Add event listeners to all buttons
+        buttons.map(button => {
+            button.addEventListener('click', (e) => {
+                const value = e.target.innerText;
+                if (!isNaN(value)) {
+                    handleNumber(value);
+                } else if (value === 'C') {
+                    clearDisplay();
+                } else if (value === '=') {
+                    calculateResult();
+                } else if (value === '.') {
+                    handleDecimal();
+                } else {
+                    handleOperator(value);
+                }
+            });
+        });
+
+        // Function to handle number input
+        function handleNumber(num) {
+            if (operatorClicked || display.innerText === '0') {
+                display.innerText = num;
+                operatorClicked = false;
+            } else {
+                display.innerText += num;
+            }
+            currentInput = display.innerText;
+        }
+
+        // Clear display and reset all variables
+        function clearDisplay() {
+            display.innerText = '0';
+            currentInput = '0';
+            previousInput = '';
+            operator = '';
+            result = null;
+        }
+
+        // Function to handle operators
+        function handleOperator(op) {
+            if (operator && !operatorClicked) {
+                calculateResult();
+            }
+            previousInput = display.innerText;
+            operator = op;
+            operatorClicked = true;
+        }
+
+        // Perform the calculation when equals button is clicked
+        function calculateResult() {
+            if (!previousInput || !operator) return;
+            const currentNumber = parseFloat(currentInput);
+            const previousNumber = parseFloat(previousInput);
+            switch (operator) {
+                case '+':
+                    result = previousNumber + currentNumber;
+                    break;
+                case '−':
+                    result = previousNumber - currentNumber;
+                    break;
+                case '×':
+                    result = previousNumber * currentNumber;
+                    break;
+                case '÷':
+                    result = previousNumber / currentNumber;
+                    break;
+                case '%':
+                    result = previousNumber % currentNumber;
+                    break;
+            }
+            display.innerText = result;
+            currentInput = result;
+            operator = '';
+            operatorClicked = true;
+        }
+
+        // Function to handle decimal input
+        function handleDecimal() {
+            if (!display.innerText.includes('.')) {
+                display.innerText += '.';
+            }
+        }
+    </script>
+</body>
+</html>
